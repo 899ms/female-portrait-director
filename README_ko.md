@@ -2,7 +2,7 @@
 
 # 여성 인물 프롬프트 디렉터 Skill
 
-여성 인물 프롬프트 디렉터 Skill은 AI 이미지 생성을 위한 구조화된 프롬프트 생성 및 시각 디렉션 시스템입니다. V1.3은 명시된 파라미터를 고정하고 연령 특징, 얼굴, 체형, 포즈, 의상, 장면, 카메라, 조명과 필터를 구체적으로 확장한 뒤 하나의 자연스러운 촬영 순간으로 통합합니다.
+여성 인물 프롬프트 디렉터 Skill은 AI 이미지 생성을 위한 구조화된 프롬프트 생성 및 시각 디렉션 시스템입니다. V1.6는 구현된 20개 라우트 중 필요한 하나만 불러오고, 명시된 파라미터 또는 승인된 참조 이미지의 주체를 고정하여 완전한 프롬프트나 주체 보존형 이미지 편집을 생성합니다.
 
 이 프로젝트는 단순한 프롬프트 모음이 아니라 확장 가능한 여성 인물 프롬프트 Skill 프레임워크입니다.
 
@@ -17,6 +17,20 @@
 - 도시 패션 화보
 - 고풍 선협 인물 이미지
 - 전자상거래 의류 모델 이미지
+- 레트로 홍콩풍 인물 이미지
+- 프렌치 릴랙스 인물 이미지
+- 신중식 동양 미학 인물 이미지
+- 활력 스포츠 인물 이미지
+- 여행 휴가 인물 이미지
+- 스튜디오 리터칭 인물 이미지
+- 동양적 풍윤미 인물 이미지
+- 청량한 선협 강화 인물 이미지
+- 화려한 고풍 강화 인물 이미지
+- 초근접 리얼 페이스 인물 이미지
+- 고풍 귀녀 물광 메이크업 인물 이미지
+- 블랙 펄 먹금 CCD 곡선미 라이프스타일 이미지
+- 생기 있고 풍윤한 소프트 CCD 라이프스타일 이미지
+- 쿨 화이트 투명감 CCD 곡선미 라이프스타일 이미지
 
 ## 핵심 기능
 
@@ -26,6 +40,7 @@
 - 짧은 파라미터를 구체적인 시각 디렉션으로 확장하여 기계적인 반복을 피합니다.
 - 확장된 모듈을 자연스럽고 상세하며 바로 복사 가능한 프롬프트로 통합합니다.
 - 전자상거래 이미지에서는 의류 표시를 우선하고, 곡선미 스타일에서는 명확한 안전 경계를 유지합니다.
+- 승인된 셀피의 얼굴 특징 또는 제품의 핵심 시각 요소를 보존하는 참조 이미지 생성을 지원합니다.
 
 ## 빠른 시작
 
@@ -43,7 +58,23 @@
 
 ## 설치
 
-저장소를 Codex skills 디렉터리에 복제합니다.
+### npx 원클릭 설치
+
+`npx`가 포함된 [Node.js](https://nodejs.org/)가 필요합니다. Skill을 Codex에 전역으로 설치합니다.
+
+```bash
+npx skills@latest add https://github.com/liyue-aigc/female-portrait-director/tree/main/skills/female-portrait-director -g -a codex -y
+```
+
+설치된 Skill을 나중에 업데이트하려면:
+
+```bash
+npx skills@latest update female-portrait-director -g -y
+```
+
+### Git 수동 설치
+
+또는 저장소를 Codex skills 디렉터리에 복제할 수 있습니다.
 
 Windows PowerShell:
 
@@ -57,11 +88,13 @@ macOS 또는 Linux:
 git clone https://github.com/liyue-aigc/female-portrait-director.git "${CODEX_HOME:-$HOME/.codex}/skills/female-portrait-director"
 ```
 
-새 Codex 대화를 시작한 뒤 다음을 호출합니다.
+Codex를 다시 시작하거나 새 대화를 시작한 뒤 다음을 호출합니다.
 
 ```text
 $female-portrait-director
 ```
+
+파라미터 없이 처음 호출하면 20개 스타일 목록, 입력 템플릿, 파라미터에서 상세 프롬프트로 변환되는 예시, 직접 이미지 생성 및 승인된 참조 이미지 사용법이 포함된 V1.6 튜토리얼이 표시됩니다.
 
 ## 예시: 파라미터에서 디렉터 스타일 프롬프트까지
 
@@ -105,13 +138,21 @@ $female-portrait-director
 ├── assets/examples/
 ├── skill/
 │   ├── skill.md
+│   ├── style-registry.md
 │   ├── public_instructions.md
 │   ├── parameter_schema.md
 │   ├── usage_examples.md
+│   ├── core/
 │   ├── references/
 │   │   ├── director-expansion.md
 │   │   └── visual-libraries.md
 │   └── routes/
+│       ├── commercial/
+│       ├── curve/
+│       ├── fantasy/
+│       ├── fashion/
+│       ├── lifestyle/
+│       └── oriental/
 ├── docs/
 │   ├── style_guide.md
 │   ├── prompt_safety.md
@@ -122,7 +163,7 @@ $female-portrait-director
 
 ## 안전 경계
 
-이 프로젝트는 가상의 성인 인물을 대상으로 한 비노출, 비유해 시각 프롬프트 생성에만 사용할 수 있습니다. 미성년자 성적 대상화, 노골적인 노출, 비동의 이미지, 기만적 신원 콘텐츠, 괴롭힘, 명예 훼손, 개인정보 침해 또는 기타 불법적인 목적으로 사용할 수 없습니다. 자세한 내용은 [prompt_safety.md](docs/prompt_safety.md)와 [DISCLAIMER.md](DISCLAIMER.md)를 참고하세요.
+텍스트 전용 생성은 가상의 명확한 성인 인물을 기본값으로 사용합니다. 참조 이미지 워크플로는 사용자 본인 또는 승인된 성인 인물의 신원과 사용 권한이 있는 제품의 시각 요소를 보존할 수 있습니다. 미성년자 성적 대상화, 노골적인 노출, 비동의 이미지, 기만적 신원 콘텐츠, 괴롭힘, 명예 훼손, 개인정보 침해 또는 기타 불법적인 목적으로 사용할 수 없습니다. 자세한 내용은 [prompt_safety.md](docs/prompt_safety.md)와 [DISCLAIMER.md](DISCLAIMER.md)를 참고하세요.
 
 ## 라이선스
 
@@ -131,5 +172,5 @@ $female-portrait-director
 ## 작성자 및 버전
 
 - 작성자: Li Yue (李岳)
-- 버전: `FEMALE-PORTRAIT-DIRECTOR-V1.3`
+- 버전: `FEMALE-PORTRAIT-DIRECTOR-V1.6`
 - 프로젝트: `Female Portrait Prompt Director Skill`

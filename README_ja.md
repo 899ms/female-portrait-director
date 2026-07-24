@@ -2,7 +2,7 @@
 
 # 女性ポートレート・プロンプトディレクター Skill
 
-女性ポートレート・プロンプトディレクター Skill は、AI 画像生成向けの構造化プロンプト生成・視覚ディレクションシステムです。V1.3 では、明示されたパラメータを固定し、年齢表現、顔立ち、体型、ポーズ、衣服、シーン、カメラ、光、フィルターを詳細化してから、一つの自然な撮影瞬間へ統合します。
+女性ポートレート・プロンプトディレクター Skill は、AI 画像生成向けの構造化プロンプト生成・視覚ディレクションシステムです。V1.6 では、20 種類の実装済みルートから必要なものだけを読み込み、明示されたパラメータまたは許可済み参照画像の主体を固定し、完全なプロンプトまたは主体保持型の画像編集を生成します。
 
 このプロジェクトは単なるプロンプト集ではなく、拡張可能な女性ポートレート用 Skill フレームワークです。
 
@@ -17,6 +17,20 @@
 - 都会的なファッション写真
 - 古風・仙侠テイストの人物画
 - EC 向け衣服モデル画像
+- レトロ香港風ポートレート
+- フレンチリラックスポートレート
+- 新中式・東洋美学ポートレート
+- アクティブスポーツポートレート
+- 旅行・バケーションポートレート
+- スタジオレタッチポートレート
+- 東洋的な豊潤美ポートレート
+- 清冷な仙侠強化ポートレート
+- 明媚で華やかな古風強化ポートレート
+- 超接写リアルフェイスポートレート
+- 古風貴女の水光メイクポートレート
+- ブラックパール墨金 CCD 曲線ライフスタイル
+- 元気で豊潤なソフト CCD ライフスタイル
+- コールドホワイト透明感 CCD 曲線ライフスタイル
 
 ## 主な機能
 
@@ -26,6 +40,7 @@
 - 短いパラメータを具体的な視覚ディレクションへ展開し、機械的な言い換えを避けます。
 - 展開したモジュールを自然で詳細なコピー可能プロンプトへ統合します。
 - EC 画像では衣服表示を優先し、曲線美スタイルでは明確な安全境界を維持します。
+- 許可済みセルフィーの顔立ちまたは製品の主要視覚要素を保持した参照画像生成に対応します。
 
 ## クイックスタート
 
@@ -43,7 +58,23 @@
 
 ## インストール
 
-リポジトリを Codex の skills ディレクトリにクローンします。
+### npx によるワンコマンドインストール
+
+`npx` を含む [Node.js](https://nodejs.org/) が必要です。Skill を Codex にグローバルインストールします。
+
+```bash
+npx skills@latest add https://github.com/liyue-aigc/female-portrait-director/tree/main/skills/female-portrait-director -g -a codex -y
+```
+
+インストール済み Skill を後から更新する場合：
+
+```bash
+npx skills@latest update female-portrait-director -g -y
+```
+
+### Git による手動インストール
+
+別の方法として、リポジトリを Codex の skills ディレクトリにクローンできます。
 
 Windows PowerShell：
 
@@ -57,11 +88,13 @@ macOS または Linux：
 git clone https://github.com/liyue-aigc/female-portrait-director.git "${CODEX_HOME:-$HOME/.codex}/skills/female-portrait-director"
 ```
 
-新しい Codex 会話を開始し、次を呼び出します。
+Codex を再起動するか、新しい会話を開始してから次を呼び出します。
 
 ```text
 $female-portrait-director
 ```
+
+パラメータなしで初回呼び出しを行うと、20 種類のスタイル一覧、入力テンプレート、パラメータから詳細プロンプトへの例、直接画像生成と許可済み参照画像の使い方を含む V1.6 チュートリアルが表示されます。
 
 ## 例：パラメータからディレクション付きプロンプトへ
 
@@ -105,13 +138,21 @@ $female-portrait-director
 ├── assets/examples/
 ├── skill/
 │   ├── skill.md
+│   ├── style-registry.md
 │   ├── public_instructions.md
 │   ├── parameter_schema.md
 │   ├── usage_examples.md
+│   ├── core/
 │   ├── references/
 │   │   ├── director-expansion.md
 │   │   └── visual-libraries.md
 │   └── routes/
+│       ├── commercial/
+│       ├── curve/
+│       ├── fantasy/
+│       ├── fashion/
+│       ├── lifestyle/
+│       └── oriental/
 ├── docs/
 │   ├── style_guide.md
 │   ├── prompt_safety.md
@@ -122,7 +163,7 @@ $female-portrait-director
 
 ## 安全境界
 
-このプロジェクトは、架空の成人を対象とした、露骨ではなく有害でもない視覚プロンプト生成にのみ使用できます。未成年者の性的表現、露骨なヌード、同意のない画像、なりすましを目的としたコンテンツ、嫌がらせ、名誉毀損、プライバシー侵害、その他の違法な目的には使用できません。詳細は [prompt_safety.md](docs/prompt_safety.md) と [DISCLAIMER.md](DISCLAIMER.md) を参照してください。
+テキストのみの生成では、架空で明確に成人の人物を既定とします。参照画像ワークフローでは、ユーザー本人または許可済み成人人物の本人性、およびユーザーが使用権を持つ製品の視覚要素を保持できます。未成年者の性的表現、露骨なヌード、同意のない画像、なりすましを目的としたコンテンツ、嫌がらせ、名誉毀損、プライバシー侵害、その他の違法な目的には使用できません。詳細は [prompt_safety.md](docs/prompt_safety.md) と [DISCLAIMER.md](DISCLAIMER.md) を参照してください。
 
 ## ライセンス
 
@@ -131,5 +172,5 @@ $female-portrait-director
 ## 作者とバージョン
 
 - 作者：Li Yue（李岳）
-- バージョン：`FEMALE-PORTRAIT-DIRECTOR-V1.3`
+- バージョン：`FEMALE-PORTRAIT-DIRECTOR-V1.6`
 - プロジェクト：`Female Portrait Prompt Director Skill`

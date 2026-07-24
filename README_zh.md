@@ -2,13 +2,58 @@
 
 # 女性人像提示词导演 Skill
 
-女性人像提示词导演 Skill 是一个面向 AI 生图场景的结构化女性人像提示词生成与视觉导演系统，支持清纯生活照、纯欲曲线生活照、都市时尚写真、古风仙侠美人图、电商服装模特图等多种风格。V1.3 会锁定明确参数，完整扩写年龄特征、五官、身形、姿态、服装、场景、镜头、光线和滤镜，再将这些模块融合为同一个自然摄影瞬间。
+输入少量写真参数，生成一张人物、动作、服装、场景、镜头与光线彼此成立的照片；也可以直接出图，并保留已授权的人物或产品参考主体。
 
-本项目不是普通提示词合集，而是一个可扩展的女性人像提示词 Skill 框架。
+[![skills.sh](https://skills.sh/b/liyue-aigc/female-portrait-director)](https://skills.sh/liyue-aigc/female-portrait-director)
+[![GitHub stars](https://img.shields.io/github/stars/liyue-aigc/female-portrait-director?style=flat)](https://github.com/liyue-aigc/female-portrait-director/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-## 项目定位
+它不是普通提示词合集。Skill 会锁定用户的明确要求，只选择一个视觉 Route，再把人物、事件、服装、空间、镜头、光线和滤镜组织成同一个可拍摄瞬间。没有授权参考图时，人物默认为虚构且明确成年的女性。
 
-通过少量输入参数生成完整提示词，并在保留用户明确要求的前提下扩写五官、身形、服装、场景、镜头姿态、光线、滤镜、平台用途和负面约束。默认人物必须是明确成年的女性，输出强调真实摄影质感、克制表达、画面统一和稳定生成。
+## 先看结果
+
+| 清纯生活 | 都市时尚 | 古风仙侠 |
+| --- | --- | --- |
+| ![咖啡馆窗边清纯生活照](assets/cases/01-clean-lifestyle.png) | ![商场外都市时尚街拍](assets/cases/02-urban-fashion.png) | ![红金华服古风仙侠写真](assets/cases/03-gufeng-xianxia.png) |
+| 港风街拍 | 法式慵懒 | 纯欲曲线 |
+| ![夕阳老街港风写真](assets/cases/04-retro-hongkong-street.png) | ![巴黎阳台法式慵懒写真](assets/cases/05-french-lazy.png) | ![清透生活感纯欲曲线写真](assets/cases/06-pure-desire-curve.png) |
+
+六个案例依次展示：清纯生活、都市时尚、古风仙侠、港风街拍、法式慵懒和纯欲曲线。
+
+## 60 秒开始使用
+
+使用开源 `skills` CLI 一键安装：
+
+```bash
+npx skills add https://github.com/liyue-aigc/female-portrait-director/tree/main/skills/female-portrait-director -g
+```
+
+重新开始一个 Agent 对话，然后粘贴：
+
+```text
+使用 $female-portrait-director 直接生成图片：
+风格：清纯生活照
+场景：午后安静的咖啡馆靠窗座位
+服装：米白针织开衫 + 浅色内搭
+气质：温柔、自然、明确成年
+画幅：3:4
+```
+
+如果只需要可复制提示词，删除“直接生成图片”即可。Skill 会返回参数锁定、导演式提示词和负面约束。
+
+## Agent 兼容性
+
+当前 `skills` CLI 已对完整的 62 文件分发包完成以下目标端安装验证：
+
+| Agent | 安装包 | 提示词工作流 | 直接生图工作流 |
+| --- | --- | --- | --- |
+| Codex | 已验证 | 已实机运行 | 宿主提供生图能力时支持 |
+| Claude Code | 已验证 | 兼容 Agent Skills | 取决于所连接的生图工具 |
+| Cursor | 已验证 | 兼容 Agent Skills | 取决于所连接的生图工具 |
+| GitHub Copilot | 已验证 | 兼容 Agent Skills | 取决于所连接的生图工具 |
+| Gemini CLI | 已验证 | 兼容 Agent Skills | 取决于所连接的生图工具 |
+
+“安装包已验证”表示安装器会把 `SKILL.md` 以及它引用的全部 Route、工具、安全规则和示例复制到目标 Skill 中。本次发布环境只对 Codex 做了实际运行验证；其余行表示分发结构与 Agent Skills 规范兼容，并不表示每个宿主都自带图像模型。
 
 ## 支持风格
 
@@ -17,6 +62,23 @@
 - 都市时尚写真
 - 古风仙侠美人图
 - 电商服装模特图
+- 复古港风写真
+- 法式慵懒写真
+- 新中式东方写真
+- 活力运动写真
+- 旅行假日写真
+- 影楼精修写真
+- 东方丰腴写真
+- 清冷仙气古风增强版
+- 明媚华贵古风增强版
+- 超近景真实人脸人像
+- 古风贵女水光妆
+- 黑珍珠墨金CCD曲线生活照
+- 元气丰腴柔光CCD生活照
+- 冷白清透CCD曲线生活照
+- 低调电影感摄影
+
+完整的新手教学、20 风格菜单和参数转五段式详细提示词示例见 [首次使用帮助](skill/help.md)。
 
 ## 核心能力
 
@@ -26,24 +88,19 @@
 - 将短参数扩写为可拍摄的具体瞬间，避免机械复述和填空式输出。
 - 将各模块融合为自然、完整、可直接复制的摄影导演式提示词。
 - 为电商图片保留服装展示优先级，为曲线风格保留明确的安全边界。
+- 支持授权自拍五官或产品核心视觉锁定后的参考图直接生成。
 
-## 快速开始
+## 安装与更新
 
-将仓库作为 Codex Skill 使用时，可直接调用 `$female-portrait-director`。最简输入示例：
+一键安装需要包含 `npx` 的 [Node.js](https://nodejs.org/)。后续更新已安装的 Skill：
 
-```text
-风格：清纯生活照
-场景：咖啡馆靠窗座位
-服装：白色针织开衫 + 浅色内搭
-气质：清纯温柔
-画幅：9:16
+```bash
+npx skills@latest update female-portrait-director -g -y
 ```
 
-系统将输出参数锁定结果、可直接复制的完整提示词和负面约束。完整调用字段参见 [parameter_schema.md](skill/parameter_schema.md)，示例参见 [usage_examples.md](skill/usage_examples.md)。
+### 使用 Git 手动安装到 Codex
 
-## 安装方式
-
-将仓库克隆到 Codex 的 skills 目录。
+也可以将仓库克隆到 Codex 的 skills 目录。
 
 Windows PowerShell：
 
@@ -57,11 +114,13 @@ macOS 或 Linux：
 git clone https://github.com/liyue-aigc/female-portrait-director.git "${CODEX_HOME:-$HOME/.codex}/skills/female-portrait-director"
 ```
 
-重新开始一个 Codex 对话，然后调用：
+重启 Codex 或重新开始一个对话，然后调用：
 
 ```text
 $female-portrait-director
 ```
+
+首次无参数调用会显示 V1.6 教程：20 种已实现风格、基础与高级模板、风格 + 气质组合规则、参数生成详细提示词示例，以及直接出图与授权参考图用法。
 
 ## 示例：从参数到导演式扩写
 
@@ -105,13 +164,24 @@ $female-portrait-director
 ├── assets/examples/
 ├── skill/
 │   ├── skill.md
+│   ├── style-registry.md
+│   ├── help.md
 │   ├── public_instructions.md
 │   ├── parameter_schema.md
 │   ├── usage_examples.md
+│   ├── core/
 │   ├── references/
 │   │   ├── director-expansion.md
 │   │   └── visual-libraries.md
 │   └── routes/
+│       ├── beauty/
+│       ├── commercial/
+│       ├── curve/
+│       ├── fantasy/
+│       ├── fashion/
+│       ├── lifestyle/
+│       ├── oriental/
+│       └── realism/
 ├── docs/
 │   ├── style_guide.md
 │   ├── prompt_safety.md
@@ -122,7 +192,7 @@ $female-portrait-director
 
 ## 安全边界
 
-本项目仅用于虚构、成年、非裸露、非伤害性的视觉提示词生成。禁止用于未成年人性化、色情裸露、非自愿图像、欺骗性身份内容、骚扰、诽谤、隐私侵犯或其他违法违规用途。详细规则参见 [prompt_safety.md](docs/prompt_safety.md) 和 [DISCLAIMER.md](DISCLAIMER.md)。
+文本生图默认使用虚构、明确成年的人物。参考图工作流允许保留用户本人或已授权成年人物的身份，也允许保留用户有权使用的产品视觉。禁止用于未成年人性化、色情裸露、非自愿图像、欺骗性身份内容、骚扰、诽谤、隐私侵犯或其他违法违规用途。详细规则参见 [prompt_safety.md](docs/prompt_safety.md) 和 [DISCLAIMER.md](DISCLAIMER.md)。
 
 ## License
 
@@ -131,5 +201,5 @@ $female-portrait-director
 ## 作者与版本
 
 - 作者：李岳
-- 版本：`FEMALE-PORTRAIT-DIRECTOR-V1.3`
+- 版本：`FEMALE-PORTRAIT-DIRECTOR-V1.6`
 - 项目：`Female Portrait Prompt Director Skill`
